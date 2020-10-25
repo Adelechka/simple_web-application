@@ -39,9 +39,9 @@ public class LoginServlet extends HttpServlet {
         String login = req.getParameter("login");
         String password = req.getParameter("password");
 
-        List<Client> clients = clientService.getByData(login, password);
+        List<Client> clients = clientService.getByData(login);
 
-        if (clients != null) {
+        if (clients != null && passwordEncoder.matches(password, clients.get(0).getPassword())) {
             HttpSession session = req.getSession(true);
             session.setAttribute("client", clients.get(0));
             Client client = clients.get(0);

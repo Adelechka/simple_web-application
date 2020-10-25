@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface ClientsRepository extends CrudRepository<Client>{
     List<Client> findByUuid(String uuid);
-    List<Client> findByData(String login, String password);
+    List<Client> findByData(String login);
 }

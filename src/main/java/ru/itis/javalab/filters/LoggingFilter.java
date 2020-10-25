@@ -5,14 +5,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import javax.servlet.http.*;
+import java.io.*;
 
 @WebFilter("/*")
+@lombok.extern.slf4j.Slf4j
 public class LoggingFilter implements Filter {
-
-    private static final Logger logger = LoggerFactory.getLogger(LoggingFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -24,8 +22,8 @@ public class LoggingFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        logger.info(request.getHeader("User-Agent"));
-        logger.info(String.valueOf(request.getRequestURL()));
+        log.info(request.getHeader("User-Agent"));
+        log.info(request.getRequestURL().toString());
 
         filterChain.doFilter(servletRequest, servletResponse);
     }

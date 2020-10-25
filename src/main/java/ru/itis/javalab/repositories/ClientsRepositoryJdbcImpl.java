@@ -1,5 +1,7 @@
 package ru.itis.javalab.repositories;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.itis.javalab.models.Client;
 
 import javax.sql.DataSource;
@@ -16,7 +18,7 @@ public class ClientsRepositoryJdbcImpl implements ClientsRepository {
         //language=SQL
         private static final String SQL_FIND_BY_ID = "SELECT * FROM client WHERE id = ?";
         //language=SQL
-        private static final String SQL_FIND_BY_LOGIN_AND_PASSWORD = "SELECT * FROM client WHERE login = ? AND password = ?";
+        private static final String SQL_FIND_BY_LOGIN = "SELECT * FROM client WHERE login = ?";
         //language=SQL
         private static final String SQL_FIND_BY_UUID = "SELECT * FROM client WHERE uuid = ?";
         //language=SQL
@@ -25,6 +27,7 @@ public class ClientsRepositoryJdbcImpl implements ClientsRepository {
     private DataSource dataSource;
 
     private SimpleJdbcTemplate template;
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public ClientsRepositoryJdbcImpl(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -58,7 +61,7 @@ public class ClientsRepositoryJdbcImpl implements ClientsRepository {
             statement = connection.prepareStatement(SQL_SAVE_CLIENT);
 
             statement.setString(1, entity.getLogin());
-            statement.setString(2, entity.getPassword());
+            statement.setString(2, passwordEncoder.encode(entity.getPassword()));
             statement.setString(3, entity.getUuid());
             statement.executeUpdate();
 
@@ -101,7 +104,7 @@ public class ClientsRepositoryJdbcImpl implements ClientsRepository {
     }
 
     @Override
-    public List<Client> findByData(String login, String password) {
-        return template.query(SQL_FIND_BY_LOGIN_AND_PASSWORD, clientRowMapper, login, password);
+    public List<Client> findByData(String login) {
+        return template.query(SQL_FIND_BY_LOGIN, clientRowMapper, login);
     }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 public interface ClientService {
     void saveClient(Client client);
     List<Client> getAllClients();
-    List<Client> getByData(String login, String password);
+    List<Client> getByData(String login);
     List<Client> getByUuid(String uuid);
     boolean containsUuid(String uuid);
 }

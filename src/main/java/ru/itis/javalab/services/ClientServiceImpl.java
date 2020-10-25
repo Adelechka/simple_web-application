@@ -24,8 +24,8 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<Client> getByData(String login, String password) {
-        return clientsRepository.findByData(login, password);
+    public List<Client> getByData(String login) {
+        return clientsRepository.findByData(login);
     }
 
     @Override
