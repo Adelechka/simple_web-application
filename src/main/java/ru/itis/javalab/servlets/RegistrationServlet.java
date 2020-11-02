@@ -1,5 +1,6 @@
 package ru.itis.javalab.servlets;
 
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.itis.javalab.models.Client;
 import ru.itis.javalab.services.ClientService;
@@ -20,8 +21,9 @@ public class RegistrationServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         ServletContext servletContext = config.getServletContext();
-        this.clientService = (ClientService) servletContext.getAttribute("clientsService");
-        this.passwordEncoder = (PasswordEncoder) servletContext.getAttribute("passwordEncoder");
+        ApplicationContext applicationContext = (ApplicationContext) servletContext.getAttribute("applicationContext");
+        this.clientService = applicationContext.getBean(ClientService.class);
+        this.passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
     }
 
     @Override
