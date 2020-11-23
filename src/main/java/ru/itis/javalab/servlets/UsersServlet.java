@@ -1,6 +1,10 @@
 package ru.itis.javalab.servlets;
 
+import freemarker.cache.FileTemplateLoader;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import org.springframework.context.ApplicationContext;
+import ru.itis.javalab.dto.UserDto;
 import ru.itis.javalab.models.User;
 import ru.itis.javalab.services.UsersService;
 
@@ -23,7 +27,7 @@ import java.util.List;
  * @version v1.0
  */
 
-@WebServlet("/users")
+@WebServlet("/ftlh/users")
 public class UsersServlet extends HttpServlet {
 
     private UsersService usersService;
@@ -37,7 +41,7 @@ public class UsersServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<User> users = usersService.getAllUsers();
+        List<UserDto> users = usersService.getAllUsers();
         request.setAttribute("usersForJsp", users);
         request.getRequestDispatcher("/WEB-INF/users.jsp").forward(request, response);
 //        PrintWriter writer = response.getWriter();

@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
-@WebServlet("/json/users")
+//@WebServlet("/json/users")
 public class UsersJsonServlet extends HttpServlet {
 
     private UsersService usersService;

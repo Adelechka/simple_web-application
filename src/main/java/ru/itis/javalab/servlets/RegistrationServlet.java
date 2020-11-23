@@ -1,5 +1,9 @@
 package ru.itis.javalab.servlets;
 
+import freemarker.cache.FileTemplateLoader;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.itis.javalab.models.Client;
@@ -10,7 +14,10 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
+import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @WebServlet("/registration")
 public class RegistrationServlet extends HttpServlet {
@@ -28,7 +35,18 @@ public class RegistrationServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher(req.getContextPath() + "/registration.jsp").forward(req, resp);
+        Configuration configuration = new Configuration(Configuration.VERSION_2_3_30);
+        configuration.setDefaultEncoding("UTF-8");
+
+        configuration.setTemplateLoader(new FileTemplateLoader(new File("D:\\Projects\\Simple WebApp\\src\\main\\webapp\\temp")));
+        Template template = configuration.getTemplate("template_for_registration.ftlh");
+
+        Map<String, Object> attributes = new HashMap<>();
+        try {
+            template.process(attributes, resp.getWriter());
+        } catch (IOException | TemplateException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     @Override
