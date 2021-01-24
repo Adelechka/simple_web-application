@@ -14,9 +14,14 @@ import lombok.*;
 @Builder
 @EqualsAndHashCode
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     private Long id;
     private String firstName;
     private String lastName;
     private Integer age;
+    private String login;
+    private String hashPassword;
+    private String uuid;
 }

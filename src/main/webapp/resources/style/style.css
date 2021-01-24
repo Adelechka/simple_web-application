@@ -1,0 +1,9 @@
+body {
+    margin-top: 50px;
+    background: url("/resources/img/bg.png") fixed;
+}
+
+.text-reg {
+    font-weight: bold;
+    color: white;
+}

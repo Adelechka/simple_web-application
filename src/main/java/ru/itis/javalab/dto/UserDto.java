@@ -14,13 +14,22 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Builder
 public class UserDto {
+    private Long id;
     private String firstName;
     private String lastName;
+    private Integer age;
+    private String login;
 
     public static UserDto from(User user) {
+        if (user == null) {
+            return null;
+        }
         return UserDto.builder()
+                .id(user.getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
+                .age(user.getAge())
+                .login(user.getLogin())
                 .build();
     }
 

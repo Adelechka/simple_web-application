@@ -9,26 +9,83 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import ru.itis.javalab.repositories.ClientsRepository;
-import ru.itis.javalab.repositories.ClientsRepositoryJdbcTemplateImpl;
-import ru.itis.javalab.repositories.UsersRepository;
-import ru.itis.javalab.repositories.UsersRepositoryJdbcTemplateImpl;
-import ru.itis.javalab.services.ClientService;
-import ru.itis.javalab.services.ClientServiceImpl;
-import ru.itis.javalab.services.UsersService;
-import ru.itis.javalab.services.UsersServiceImpl;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
+import ru.itis.javalab.repositories.*;
+import ru.itis.javalab.services.*;
 
 import javax.sql.DataSource;
 
+@EnableWebMvc
 @Configuration
 @PropertySource("classpath:db.properties")
 @ComponentScan(basePackages = "ru.itis.javalab")
-public class ApplicationConfig {
+public class ApplicationConfig implements WebMvcConfigurer {
 
     @Autowired
     private Environment environment;
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/resources/**")
+                .addResourceLocations("/resources/");
+    }
+
+    @Bean
+    public OrderService orderService() {
+        return new OrderServiceImpl(orderRepository());
+    }
+
+    @Bean
+    public OrderRepository orderRepository() {
+        return new OrderRepositoryJdbcTempImpl(dataSource());
+    }
+
+    @Bean
+    public ShippingService shippingService() {
+        return new ShippingServiceImpl(shippingRepository());
+    }
+
+    @Bean
+    public ShippingRepository shippingRepository() {
+        return new ShippingRepositoryJdbcTempImpl(dataSource());
+    }
+
+    @Bean
+    public CountryService countryService() {
+        return new CountryServiceImpl(countryRepository());
+    }
+
+    @Bean
+    public CountryRepository countryRepository() {
+        return new CountryRepositoryJdbcTempImpl(dataSource());
+    }
+
+    @Bean
+    public ContinentService continentService() {
+        return new ContinentServiceImpl(continentRepository());
+    }
+
+    @Bean
+    public ContinentRepository continentRepository() {
+        return new ContinentRepositoryJdbcTemplateImpl(dataSource());
+    }
+
+    @Bean
+    public CommentService commentService() {
+        return new CommentServiceImpl(commentRepository());
+    }
+
+    @Bean
+    public CommentRepository commentRepository() {
+        return new CommentRepositoryJdbcTemplateImpl(dataSource());
+    }
 
     @Bean
     public UsersService usersService() {
@@ -56,16 +113,6 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public ClientsRepository clientsRepository() {
-        return new ClientsRepositoryJdbcTemplateImpl(dataSource());
-    }
-
-    @Bean
-    public ClientService clientService() {
-        return new ClientServiceImpl(clientsRepository());
-    }
-
-    @Bean
     public HikariConfig hikariConfig() {
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(environment.getProperty("db.url"));
@@ -74,5 +121,21 @@ public class ApplicationConfig {
         hikariConfig.setMaximumPoolSize(Integer.parseInt(environment.getProperty("db.hikari.max-pool-size")));
         hikariConfig.setDriverClassName(environment.getProperty("db.driver.classname"));
         return hikariConfig;
+    }
+
+    @Bean
+    public FreeMarkerViewResolver freeMarkerViewResolver() {
+        FreeMarkerViewResolver resolver = new FreeMarkerViewResolver();
+        resolver.setPrefix("");
+        resolver.setSuffix(".ftlh");
+        resolver.setContentType("text/html;charset=UTF-8");
+        return resolver;
+    }
+
+    @Bean
+    public FreeMarkerConfigurer freeMarkerConfig() {
+        FreeMarkerConfigurer configurer = new FreeMarkerConfigurer();
+        configurer.setTemplateLoaderPath("/WEB-INF/ftl/");
+        return configurer;
     }
 }

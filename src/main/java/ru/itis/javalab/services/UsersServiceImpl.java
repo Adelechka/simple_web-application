@@ -1,5 +1,6 @@
 package ru.itis.javalab.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.itis.javalab.dto.UserDto;
 import ru.itis.javalab.models.User;
 import ru.itis.javalab.repositories.UsersRepository;
@@ -17,8 +18,8 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return usersRepository.findAll();
+    public List<UserDto> getAllUsers() {
+        return UserDto.from(usersRepository.findAll());
     }
 
     @Override
@@ -35,5 +36,28 @@ public class UsersServiceImpl implements UsersService {
                         .age(null)
                         .build()
         );
+    }
+
+    @Override
+    public void saveUser(User user) {
+        usersRepository.save(
+                User.builder()
+                        .firstName(user.getFirstName())
+                        .lastName(user.getLastName())
+                        .age(user.getAge())
+                        .login(user.getLogin())
+                        .hashPassword(user.getHashPassword())
+                        .build()
+        );
+    }
+
+    @Override
+    public UserDto getUser(Long userId) {
+        return UserDto.from(usersRepository.findById(userId).orElse(null));
+    }
+
+    @Override
+    public boolean containsUser(String login, String hashPassword) {
+        return usersRepository.containsUser(login, hashPassword);
     }
 }
