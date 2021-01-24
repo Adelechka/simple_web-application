@@ -24,4 +24,5 @@ public class User {
     private String login;
     private String hashPassword;
     private String uuid;
+    private Boolean isDeleted;
 }

@@ -19,6 +19,7 @@ public class UserDto {
     private String lastName;
     private Integer age;
     private String login;
+    private Boolean isDeleted;
 
     public static UserDto from(User user) {
         if (user == null) {

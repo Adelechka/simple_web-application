@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="http://localhost:8080/comment" method="post">
+    <div class="form-group">
+        <div class="input-group input-group-sm mb-3">
+            <input class="form-control" type="text" name="author" placeholder="Введите ваше имя">
+        </div>
+        <div class="input-group input-group-sm mb-3">
+            <textarea class="form-control" type="text" name="text" placeholder="Введите ваш отзыв" rows="3"></textarea>
+        </div>
+        <input type="hidden" value="${_csrf_token}" name="_csrf_token">
+        <input type="submit" class="btn btn-info">
+    </div>
+</form>
+</body>
+</html>

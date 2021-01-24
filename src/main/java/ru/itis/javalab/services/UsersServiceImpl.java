@@ -28,6 +28,17 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
+    public void deleteByIs(Long userId) {
+        usersRepository.findById(userId)
+                .ifPresent(
+                        user -> {
+                            user.setIsDeleted(true);
+                            usersRepository.update(user);
+                        }
+                );
+    }
+
+    @Override
     public void addUser(UserDto userDto) {
         usersRepository.save(
                 User.builder()

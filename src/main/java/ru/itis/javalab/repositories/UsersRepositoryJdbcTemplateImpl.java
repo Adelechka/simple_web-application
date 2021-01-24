@@ -32,6 +32,8 @@ public class UsersRepositoryJdbcTemplateImpl implements UsersRepository {
     private static final String SQL_FIND_BY_UUID = "SELECT * FROM \"user\" WHERE uuid = ?";
     //language=SQL
     private static final String SQL_FIND_BY_LOGIN = "SELECT * FROM \"user\" WHERE login = :login";
+    //language=SQL
+    private static final String SQL_UPDATE_USER = "UPDATE \"user\" SET lastname = ?, firstname = ?, age = ?, login  = ?, hashpassword = ?, uuid = ?, is_deleted = ? WHERE id = ?";
 
 
     private RowMapper<User> userRowMapper = (row, i) -> User.builder()
@@ -85,7 +87,8 @@ public class UsersRepositoryJdbcTemplateImpl implements UsersRepository {
                         "age", entity.getAge(),
                         "login", entity.getLogin(),
                         "hashpassword", passwordEncoder.encode(entity.getHashPassword()),
-                        "uuid", UUID.randomUUID().toString()
+                        "uuid", UUID.randomUUID().toString(),
+                        "is_deleted", entity.getIsDeleted()
                 ))
                 .getKeys();
         entity.setId((Long) keys.get("id"));
@@ -93,7 +96,16 @@ public class UsersRepositoryJdbcTemplateImpl implements UsersRepository {
 
     @Override
     public void update(User entity) {
-
+        jdbcTemplate.update(SQL_UPDATE_USER, statement -> {
+            statement.setString(1, entity.getLastName());
+            statement.setString(2, entity.getFirstName());
+            statement.setInt(3, entity.getAge());
+            statement.setString(4, entity.getLogin());
+            statement.setString(5, entity.getHashPassword());
+            statement.setString(6, entity.getUuid());
+            statement.setBoolean(7, entity.getIsDeleted());
+            statement.setLong(8, entity.getId());
+        });
     }
 
     @Override
